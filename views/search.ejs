@@ -1,0 +1,75 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TVFinder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <title>Bootstrap Example</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+   <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  >
+
+  <style>
+    
+  </style> 
+  </head>
+  <body>
+     <%- include('partials/navbar') %>
+     
+
+ <div id="main">
+    <form class="hero-search search-page-form my-3" action="/search" method="POST" role="search" >
+            <i class="bi bi-search hero-search-icon" aria-hidden="true"></i>
+            <input
+                type="search"
+                name="query"
+                placeholder="Search TV shows..."
+                aria-label="Search TV shows"
+                required
+            >
+            <button id="hero-button" type="submit">Search</button>
+        </form>
+
+<h1 class="mb-3">Search results for "<%= query %>"</h1>
+
+
+<div id="movie-container">
+  <% shows.forEach(result => { %>
+    <% const show = result.show; %>
+    <% const imageUrl = (show.image && (show.image.medium || show.image.original)) || '/images/mha.jpg'; %>
+
+    <a href="/shows/<%= show.id %>" class="movie-link">
+      <div class="card movie-card">
+        <img
+          src="<%= imageUrl %>"
+          class="card-img-top card-image"
+          alt="<%= show.name %>"
+        />
+
+        <div class="card-body">
+          <h5 class="card-title"><%= show.name %></h5>
+
+          <p class="card-text text-muted">
+            <%= show.genres.join(', ') %>
+          </p>
+
+          <p class="mb-0">
+            <i class="bi bi-star-fill" id="star"></i>
+            <%= show.rating.average || 'N/A' %>
+          </p>
+        </div>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+</div>
+  </body>
+</html>

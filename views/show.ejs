@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TVFinder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://getbootstrap.com/docs/5.3/assets/css/docs.css"
+      rel="stylesheet"
+    />
+    <title>Bootstrap Example</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <style></style>
+  </head>
+  <body>
+    <%- include('partials/navbar') %>
+    <div id="show">
+      <div id="show-content" class="row g-0 justify-content-center">
+        <div class="col-12">
+          <div class="row g-4 align-items-center">
+            <div class="col-12 col-md-4">
+              <% const imageUrl = (show.image && (show.image.original ||
+              show.image.medium)) || '/images/mha.jpg'; %>
+              <img
+                src="<%= imageUrl %>"
+                class="show-poster"
+                alt="<%= show.name %>"
+              />
+            </div>
+            <div class="col-12 col-md-8 show-details">
+                <h2><%= show.name %></h2>
+                <div class="show-meta" aria-label="Show details">
+                  <span class="show-meta-item">
+                    <i class="bi bi-calendar3" aria-hidden="true"></i>
+                    <%= show.premiered ? show.premiered.substring(0, 4) : 'Year unknown' %>
+                    <% if (show.ended) { %>
+                      – <%= show.ended.substring(0, 4) %>
+                    <% } else if (show.premiered) { %>
+                      – Present
+                    <% } %>
+                  </span>
+                  <span class="show-status"><%= show.status %></span>
+                  <% if (show.averageRuntime) { %>
+                    <span class="show-meta-item">
+                      <i class="bi bi-clock" aria-hidden="true"></i>
+                      <%= show.averageRuntime %> min per episode
+                    </span>
+                  <% } %>
+                </div>
+                <div class="genre-list">
+  <% if (show.genres.length) { %>
+    <% show.genres.forEach(genre => { %>
+      <span class="genre-badge"><%= genre %></span>
+    <% }) %>
+  <% } else { %>
+    <span class="text-muted">No genres</span>
+  <% } %>
+</div>
+                <div class="show-rating">
+                    <p><i id="star" class="bi bi-star-fill"></i> <%= show.rating.average || 'N/A' %></p>
+                </div>
+                <div class="show-summary">
+                   <%= show.summary ? show.summary
+                     .replace(/<br\s*\/?>/gi, ' ')
+                     .replace(/<\/p\s*>/gi, ' ')
+                     .replace(/<[^>]*>/g, '')
+                     .replace(/\s+/g, ' ')
+                     .trim() : 'No summary available.' %>
+                </div>
+                <div class="Show-site">
+                    <a id="show-site-link" href="">Official Website  <i class="bi bi-box-arrow-up-right"></i></a>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-lg-4">
+          <div class="mt-4">
+                   <h3>Cast</h3>
+
+<% if (cast && cast.length > 0) { %>
+  <div class="cast-grid">
+  <% cast.forEach((member) => { %>
+    <div class="cast-card text-center">
+      <img
+        src="<%= member.person.image?.medium || '/images/kakashi.jpg' %>"
+        alt="<%= member.person.name %>"
+        class="cast-image"
+        onerror="this.onerror=null; this.src='/images/kakashi.jpg';"
+      >
+
+      <h6 class="cast-name mt-2">
+        <%= member.person.name %>
+      </h6>
+
+      <p class="cast-character text-secondary">
+        <%= member.character.name %>
+      </p>
+    </div>
+  <% }) %>
+</div>
+<% } else { %>
+  <p class="text-secondary">No cast information available for this show.</p>
+<% } %>
+          </div>
+        </div>
+        <div class="col-12 col-lg-8 px-lg-5">
+<div class="mt-4">
+  <h3>Episodes</h3>
+
+  <% const seasons = Object.keys(episodesBySeason).sort((a, b) => a - b); %>
+
+<ul class="nav nav-tabs mb-4" id="seasonTabs" role="tablist">
+  <% seasons.forEach((season, index) => { %>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link <%= index === 0 ? 'active' : '' %>"
+        id="season-tab-<%= season %>"
+        data-bs-toggle="tab"
+        data-bs-target="#season-<%= season %>"
+        type="button"
+        role="tab"
+        aria-controls="season-<%= season %>"
+        aria-selected="<%= index === 0 ? 'true' : 'false' %>">
+
+        Season <%= season %>
+      </button>
+    </li>
+  <% }) %>
+</ul>
+
+<div class="tab-content" id="seasonTabsContent">
+  <% seasons.forEach((season, index) => { %>
+
+    <div
+      class="tab-pane fade <%= index === 0 ? 'show active' : '' %>"
+      id="season-<%= season %>"
+      role="tabpanel"
+      aria-labelledby="season-tab-<%= season %>"
+      tabindex="0">
+
+      <div class="row g-4">
+
+        <% episodesBySeason[season].forEach((episode) => { %>
+          <% const randomEpisodeImage = imageUrls && imageUrls.length
+            ? imageUrls[Math.floor(Math.random() * imageUrls.length)]
+            : '/images/mha.jpg'; %>
+          <% const episodeImage = episode.image?.original || episode.image?.medium; %>
+          <% const episodeImageFallback = episodeImage ? randomEpisodeImage : '/images/mha.jpg'; %>
+          <div class="col-12 col-sm-6 col-lg-4">
+
+            <div class="card episode-card h-100">
+              <img
+                src="<%= episodeImage || randomEpisodeImage %>"
+                data-fallback="<%= episodeImageFallback %>"
+                alt="<%= episode.name %>"
+                class="episode-image"
+                onerror="if (this.dataset.fallbackState) { this.onerror = null; this.src = '/images/mha.jpg'; } else { this.dataset.fallbackState = '1'; this.src = this.dataset.fallback; }"
+/>
+
+              <div class="card-body">
+                <p class="text-secondary small mb-1">
+                  Episode <%= episode.number ?? 'Special' %>
+                </p>
+
+                <h5 class="card-title">
+                  <%= episode.name %>
+                </h5>
+
+                <p class="small text-secondary">
+                  <%= episode.airdate || 'Air date unknown' %>
+                </p>
+
+                <a
+                  href="https://www.google.com/search?q=<%= encodeURIComponent(show.name + ' ' + episode.name + ' watch online') %>"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-outline-primary btn-sm">
+                  Where to Watch
+                </a>
+              </div>
+            </div>
+
+          </div>
+        <% }) %>
+
+      </div>
+    </div>
+
+  <% }) %>
+</div>
+</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TVFinder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <title>Bootstrap Example</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+   <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  >
+  </head>
+  <body>
+     <%- include('partials/navbar') %>
+     <%- include('partials/hero') %>
+      <div id="main">
+    <div id="main-head">
+  <h3 id="popular-shows">Popular shows</h3>
+  <p id="view-all-button"><a href=""> View All <i class="bi bi-arrow-right"></i></a></p>
+</div>
+
+
+<div id="movie-container">
+  <% shows.forEach(show => { %>
+    <% const imageUrl = (show.image && (show.image.medium || show.image.original)) || '/images/mha.jpg'; %>
+
+    <a href="/shows/<%= show.id %>" class="movie-link">
+      <div class="card movie-card">
+        <img
+          src="<%= imageUrl %>"
+          class="card-img-top card-image"
+          alt="<%= show.name %>"
+        />
+
+        <div class="card-body">
+          <h5 id="genre" class="card-title"><%= show.name %></h5>
+
+          <p id="genre" class="card-text text-muted">
+            <%= show.genres.join(', ') %>
+          </p>
+
+          <p class="mb-0">
+            <i class="bi bi-star-fill" id="star"></i>
+            <%= show.rating.average || 'N/A' %>
+          </p>
+        </div>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+
+
+</div>
+  </body>
+</html>
