@@ -3,6 +3,53 @@
 
   <div class="nav-links">
     <a href="/">Home</a>
-    <a href="/">Search</a>
+    <a href="/search">Search</a>
+  </div>
+
+  <div class="nav-actions">
+    <button type="button" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+      <span class="theme-toggle-icon" aria-hidden="true"><i class="bi bi-moon-stars-fill"></i></span>
+      <span class="theme-toggle-label">Dark</span>
+    </button>
   </div>
 </nav>
+
+<script>
+  (function () {
+    const STORAGE_KEY = 'tvfinder-theme';
+    const applyTheme = (theme) => {
+      const isDark = theme === 'dark';
+      document.body.classList.toggle('theme-dark', isDark);
+      document.body.classList.toggle('theme-light', !isDark);
+
+      const toggle = document.querySelector('.theme-toggle');
+      if (!toggle) return;
+
+      toggle.setAttribute('aria-pressed', String(isDark));
+      toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+
+      const label = toggle.querySelector('.theme-toggle-label');
+      const icon = toggle.querySelector('.theme-toggle-icon');
+      if (label) {
+        label.textContent = isDark ? 'Light' : 'Dark';
+      }
+      if (icon) {
+        icon.innerHTML = isDark ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-stars-fill"></i>';
+      }
+    };
+
+    const savedTheme = localStorage.getItem(STORAGE_KEY) || 'light';
+    applyTheme(savedTheme);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.querySelector('.theme-toggle');
+      if (!toggle) return;
+
+      toggle.addEventListener('click', () => {
+        const nextTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
+        localStorage.setItem(STORAGE_KEY, nextTheme);
+        applyTheme(nextTheme);
+      });
+    });
+  })();
+</script>
