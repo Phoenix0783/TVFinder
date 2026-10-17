@@ -1,16 +1,28 @@
 <nav class="site-navbar" aria-label="Main navigation">
   <a href="/" class="nav-title"> <i class="bi bi-tv"></i> TVFinder</a>
 
-  <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/search">Search</a>
-  </div>
+  <button
+    type="button"
+    class="nav-menu-toggle"
+    aria-label="Open navigation menu"
+    aria-controls="site-nav-menu"
+    aria-expanded="false"
+  >
+    <i class="bi bi-list" aria-hidden="true"></i>
+  </button>
 
-  <div class="nav-actions">
-    <button type="button" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
-      <span class="theme-toggle-icon" aria-hidden="true"><i class="bi bi-moon-stars-fill"></i></span>
-      <span class="theme-toggle-label">Dark</span>
-    </button>
+  <div id="site-nav-menu" class="nav-menu">
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/search">Search</a>
+    </div>
+
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true"><i class="bi bi-moon-stars-fill"></i></span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -43,12 +55,49 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const toggle = document.querySelector('.theme-toggle');
-      if (!toggle) return;
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const nextTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+          applyTheme(nextTheme);
+        });
+      }
 
-      toggle.addEventListener('click', () => {
-        const nextTheme = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
-        localStorage.setItem(STORAGE_KEY, nextTheme);
-        applyTheme(nextTheme);
+      const menuToggle = document.querySelector('.nav-menu-toggle');
+      const menu = document.querySelector('#site-nav-menu');
+      if (!menuToggle || !menu) return;
+
+      const closeMenu = () => {
+        menu.classList.remove('is-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Open navigation menu');
+        menuToggle.innerHTML = '<i class="bi bi-list" aria-hidden="true"></i>';
+      };
+
+      menuToggle.addEventListener('click', () => {
+        const isOpen = menu.classList.toggle('is-open');
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+        menuToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+        menuToggle.innerHTML = isOpen
+          ? '<i class="bi bi-x-lg" aria-hidden="true"></i>'
+          : '<i class="bi bi-list" aria-hidden="true"></i>';
+      });
+
+      menu.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menu.classList.contains('is-open')) {
+          closeMenu();
+          menuToggle.focus();
+        }
+      });
+
+      menu.querySelectorAll('.nav-links a').forEach((link) => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          closeMenu();
+        }
       });
     });
   })();

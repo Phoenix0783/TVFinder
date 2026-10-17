@@ -199,6 +199,14 @@ a {
   white-space: nowrap;
 }
 
+.nav-menu-toggle {
+  display: none;
+}
+
+.nav-menu {
+  display: contents;
+}
+
 .nav-links {
   grid-column: 2;
   display: flex;
@@ -266,21 +274,6 @@ a {
 .nav-links a:focus-visible {
   outline: 2px solid var(--primary-light);
   outline-offset: 4px;
-}
-
-@media (max-width: 480px) {
-  .site-navbar {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 12px;
-  }
-
-  .nav-title,
-  .nav-links,
-  .nav-actions {
-    grid-column: 1;
-    justify-self: center;
-  }
 }
 
 /* Hero style */
@@ -805,9 +798,74 @@ a {
     font-size: 24px;
   }
 
-  .nav-links {
+  .nav-menu-toggle {
     grid-column: 2;
-    gap: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-on-dark);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .nav-menu-toggle:hover,
+  .nav-menu-toggle:focus-visible {
+    border-color: var(--primary-light);
+    color: var(--primary-light);
+  }
+
+  .nav-menu-toggle:focus-visible {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 3px;
+  }
+
+  .nav-menu {
+    grid-column: 1 / -1;
+    display: none;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: var(--surface-dark);
+  }
+
+  .nav-menu.is-open {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-top: 8px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
+
+  .nav-links a:hover,
+  .nav-links a:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .nav-actions {
+    justify-self: stretch;
+  }
+
+  .theme-toggle {
+    width: 100%;
+    justify-content: center;
   }
 
   #hero {
@@ -843,14 +901,7 @@ a {
 
 @media (max-width: 480px) {
   .site-navbar {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 10px;
-  }
-
-  .nav-title,
-  .nav-links {
-    grid-column: 1;
+    padding: 12px 16px;
   }
 
   #hero {
